@@ -5,6 +5,14 @@ Video walkthrough: [paste your unlisted YouTube link here]
 
 A web app that maps tick sightings across the UK, helps people learn about ticks and lets them report their own sightings. It is built with plain HTML, CSS and JavaScript and uses the Elanco Tick Sightings API.
 
+## Wireframes
+
+A sketch of the page layout, drawn in Figma after building the first version to document the design.
+
+![Map page wireframe](Untitled.png)
+![Map page wireframe](Untitled(1).png)
+![Map page wireframe](Untitled(2).png)
+
 
 ## Requirements covered
 
