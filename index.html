@@ -6,69 +6,279 @@
 <title>UK Tick Tracker - Elanco MVP</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-  :root {
-    --primary: #1d3557;
-    --secondary: #457b9d;
-    --accent-low: #2a9d8f;
-    --accent-med: #f77f00;
-    --accent-high: #d62828;
-    --bg-light: #f8f9fa;
-  }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-light); color: #333; }
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-    outline: 3px solid #ffbf47; outline-offset: 2px;
-  }
+/* GENERAL PAGE STYLE */
 
-  nav { background: var(--primary); padding: 14px 20px; display: flex; gap: 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-  nav a { color: #fff; text-decoration: none; font-weight: bold; font-size: 1.05rem; }
-  nav a:hover { text-decoration: underline; }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7f6;
+    color: #333;
+}
 
-  #status { padding: 10px 20px; background: #fff3cd; color: #856404; display: none; text-align: center; font-weight: 500; }
+html {
+    scroll-behavior: smooth;
+}
 
-  .filters-bar { background: #fff; padding: 15px 20px; display: flex; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid #ddd; align-items: flex-end; }
-  .filter-group { display: flex; flex-direction: column; font-size: 0.85rem; font-weight: bold; color: #555; }
-  .filter-group select, .filter-group input { padding: 6px 10px; margin-top: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.95rem; }
-  .filters-bar button { padding: 8px 14px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
-  #summary { margin-left: auto; font-size: 0.9rem; color: #555; }
+/* NAVIGATION BAR */
 
-  .layout { display: flex; height: 65vh; scroll-margin-top: 56px; }
-  #map { flex: 2; height: 100%; }
-  #panel { flex: 1; padding: 20px; overflow-y: auto; background: #fff; border-left: 1px solid #ddd; }
+nav {
+    background-color: #1d3557;
+    padding: 15px;
+    display: flex;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-  .section-container { max-width: 1000px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); scroll-margin-top: 70px; }
-  h2 { color: var(--primary); margin-top: 0; }
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .card { background: #f1faee; padding: 15px; border-left: 4px solid var(--secondary); border-radius: 4px; margin-bottom: 15px; }
-  .card p { margin: 6px 0; }
+nav a:hover {
+    text-decoration: underline;
+}
 
-  form label { display: block; margin-top: 12px; font-weight: bold; font-size: 0.9rem; }
-  form input, form select, form textarea { width: 100%; padding: 8px 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
-  form button { background: var(--accent-low); color: white; border: none; padding: 10px 20px; margin-top: 15px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-  form button:hover { opacity: 0.9; }
+/* STATUS MESSAGE */
 
-  .msg { padding: 10px; border-radius: 4px; margin-top: 10px; }
-  .msg.error { background: #f8d7da; color: #721c24; }
-  .msg.warning { background: #fff3cd; color: #856404; }
-  .msg.success { background: #d4edda; color: #155724; }
+#status {
+    display: none;
+    padding: 10px;
+    background-color: #fff3cd;
+    color: #856404;
+    text-align: center;
+}
 
-  .bar { color: var(--accent-low); font-family: monospace; }
-  button.action-btn { background: var(--secondary); color: white; border: none; padding: 8px 12px; margin: 6px 4px 0 0; border-radius: 4px; cursor: pointer; }
-  button.action-btn:hover { background: var(--primary); }
-  .small-btn { padding: 6px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; margin-top: 8px; }
+/* FILTER BAR */
 
-  footer { text-align: center; padding: 20px; color: #666; font-size: 0.9rem; }
+.filters-bar {
+    background-color: white;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: end;
+    border-bottom: 1px solid #ddd;
+}
 
-  @media (max-width: 768px) {
-    .layout { flex-direction: column; height: auto; }
-    #map { height: 45vh; }
-    .grid-2 { grid-template-columns: 1fr; }
-    #summary { margin-left: 0; }
-  }
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.filters-bar button {
+    padding: 8px 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#summary {
+    margin-left: auto;
+    color: #555;
+    font-size: 14px;
+}
+
+/* MAP AND DETAILS PANEL */
+
+.layout {
+    display: flex;
+    height: 65vh;
+    scroll-margin-top: 60px;
+}
+
+#map {
+    flex: 2;
+    height: 100%;
+}
+
+#panel {
+    flex: 1;
+    padding: 20px;
+    background-color: white;
+    overflow-y: auto;
+    border-left: 1px solid #ddd;
+}
+
+/* MAIN CONTENT SECTIONS */
+
+.section-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 8px;
+    scroll-margin-top: 70px;
+}
+
+h2 {
+    color: #1d3557;
+}
+
+/* TWO-COLUMN LAYOUT */
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* SPECIES CARDS */
+
+.card {
+    background-color: #f1faee;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #457b9d;
+    border-radius: 5px;
+}
+
+.card p {
+    margin: 6px 0;
+}
+
+/* REPORT FORM */
+
+form label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+form button {
+    background-color: #2a9d8f;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #21867a;
+}
+
+/* FORM MESSAGES */
+
+.msg {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.msg.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.msg.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.msg.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* MAP DETAILS BUTTONS */
+
+.bar {
+    color: #2a9d8f;
+    font-family: monospace;
+}
+
+button.action-btn {
+    background-color: #457b9d;
+    color: white;
+    padding: 8px 12px;
+    margin: 6px 4px 0 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.action-btn:hover {
+    background-color: #1d3557;
+}
+
+.small-btn {
+    padding: 8px 12px;
+    margin-top: 8px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* MOBILE PHONE LAYOUT */
+
+@media (max-width: 768px) {
+
+    .layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #map {
+        height: 45vh;
+    }
+
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    #summary {
+        margin-left: 0;
+    }
+
+    .section-container {
+        margin: 15px;
+    }
+}
+
 </style>
 </head>
 <body>
+    
 
 <nav aria-label="Main">
   <a href="#map-section">Map &amp; Tracker</a>
@@ -200,32 +410,48 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+
+
+// 1. SETTINGS
+// ------------------------------------------------------------
+
 const API = 'https://dev-task.elancoapps.com/data/tick-sightings';
+const API_BASE = 'https://dev-task.elancoapps.com/data';
 const LOCAL_KEY = 'local_tick_reports';
 
-// City -> [latitude, longitude]. The API only gives city names, so we map them ourselves.
+
+// 2. UK CITY LOCATIONS
+// ------------------------------------------------------------
+// Each city has a latitude and longitude for its map marker.
+
 const CITIES = {
-  'London': [51.5074, -0.1278], 'Manchester': [53.4808, -2.2426],
-  'Glasgow': [55.8642, -4.2518], 'Birmingham': [52.4862, -1.8904],
-  'Edinburgh': [55.9533, -3.1883], 'Liverpool': [53.4084, -2.9916],
-  'Leeds': [53.8008, -1.5491], 'Bristol': [51.4545, -2.5879],
-  'Cardiff': [51.4816, -3.1791], 'Belfast': [54.5973, -5.9301],
-  'Newcastle': [54.9783, -1.6178], 'Sheffield': [53.3811, -1.4701],
-  'Nottingham': [52.9548, -1.1581], 'Aberdeen': [57.1497, -2.0943],
-  'Southampton': [50.9097, -1.4044], 'Oxford': [51.7520, -1.2577],
-  'Cambridge': [52.2053, 0.1218], 'Norwich': [52.6309, 1.2974],
-  'Plymouth': [50.3755, -4.1427], 'York': [53.9600, -1.0873],
+  'London': [51.5074, -0.1278],
+  'Manchester': [53.4808, -2.2426],
+  'Glasgow': [55.8642, -4.2518],
+  'Birmingham': [52.4862, -1.8904],
+  'Edinburgh': [55.9533, -3.1883],
+  'Liverpool': [53.4084, -2.9916],
+  'Leeds': [53.8008, -1.5491],
+  'Bristol': [51.4545, -2.5879],
+  'Cardiff': [51.4816, -3.1791],
+  'Belfast': [54.5973, -5.9301],
+  'Newcastle': [54.9783, -1.6178],
+  'Sheffield': [53.3811, -1.4701],
+  'Nottingham': [52.9548, -1.1581],
+  'Aberdeen': [57.1497, -2.0943],
+  'Southampton': [50.9097, -1.4044],
+  'Oxford': [51.7520, -1.2577],
+  'Cambridge': [52.2053, 0.1218],
+  'Norwich': [52.6309, 1.2974],
+  'Plymouth': [50.3755, -4.1427],
+  'York': [53.9600, -1.0873],
   'Leicester': [52.6369, -1.1398]
 };
-// Lets "london" or " London " match "London"
-const CITY_LOOKUP = Object.fromEntries(Object.keys(CITIES).map(c => [c.toLowerCase(), c]));
-const normCity = name => {
-  const t = String(name || '').trim();
-  return CITY_LOOKUP[t.toLowerCase()] || t;
-};
 
-// Write your own short description for each species (names must match the API exactly).
-// Check the console line "Species in data" for the names.
+
+// 3. TICK SPECIES DESCRIPTIONS
+// ------------------------------------------------------------
+
 const DESCRIPTIONS = {
   'Marsh tick': 'A tick found in wet habitats such as marshes and damp grassland. It feeds mainly on small mammals and birds.',
   'Southern rodent tick': 'A tick that lives in the burrows and nests of small mammals such as rodents. It is rarely found in open grass.',
@@ -234,82 +460,253 @@ const DESCRIPTIONS = {
   'Fox/badger tick': 'A tick linked to foxes and badgers and their dens. It can also be picked up by dogs that explore these areas.'
 };
 
+
+// 4. SET UP THE MAP
+// ------------------------------------------------------------
+
 const map = L.map('map').setView([54.5, -3], 6);
+
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
+
 const markersLayer = L.layerGroup().addTo(map);
 
-let apiSightings = [];   // cleaned records from the API
-let allSightings = [];   // API records plus the user's saved reports
 
-const esc = s => String(s).replace(/[&<>"']/g, c =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const tally = arr => arr.reduce((o, k) => (o[k] = (o[k] || 0) + 1, o), {});
+// 5. MAIN DATA VARIABLES
+// ------------------------------------------------------------
 
-function showStatus(msg) {
-  const el = document.getElementById('status');
-  el.textContent = msg;
-  el.style.display = 'block';
+let apiSightings = [];
+let allSightings = [];
+
+
+// 6. SMALL HELPER FUNCTIONS
+// ------------------------------------------------------------
+
+function getElement(id) {
+  return document.getElementById(id);
 }
 
+
+// Make text safe before putting it inside HTML.
+function safeText(value) {
+  return String(value).replace(/[&<>"']/g, function (character) {
+    if (character === '&') return '&amp;';
+    if (character === '<') return '&lt;';
+    if (character === '>') return '&gt;';
+    if (character === '"') return '&quot;';
+    if (character === "'") return '&#39;';
+    return character;
+  });
+}
+
+
+// Change a city name into the correct format.
+function normaliseCity(name) {
+  const typedName = String(name || '').trim();
+  const cityNames = Object.keys(CITIES);
+
+  for (let i = 0; i < cityNames.length; i++) {
+    if (cityNames[i].toLowerCase() === typedName.toLowerCase()) {
+      return cityNames[i];
+    }
+  }
+
+  return typedName;
+}
+
+
+// Count how many times each item appears in an array.
+function countItems(items) {
+  const counts = {};
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+
+    if (counts[item]) {
+      counts[item] = counts[item] + 1;
+    } else {
+      counts[item] = 1;
+    }
+  }
+
+  return counts;
+}
+
+
+// Display a message at the top of the website.
+function showStatus(message) {
+  const statusBox = getElement('status');
+  statusBox.textContent = message;
+  statusBox.style.display = 'block';
+}
+
+
+// Read the reports saved in this browser.
 function getLocalReports() {
-  try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); }
-  catch (e) { return []; }
-}
-
-// ---------- Loading and cleaning data ----------
-const API_BASE = 'https://dev-task.elancoapps.com/data';
-
-// Uses the /health and /stats endpoints. Never blocks loading if they fail.
-async function checkApi() {
   try {
-    const [health, stats] = await Promise.all([
-      fetch(API_BASE + '/health').then(r => r.json()),
-      fetch(API_BASE + '/stats').then(r => r.json())
-    ]);
-    return { healthy: health.status === 'healthy', stats };
-  } catch (e) {
-    return { healthy: false, stats: null };
+    const savedReports = localStorage.getItem(LOCAL_KEY);
+
+    if (savedReports) {
+      return JSON.parse(savedReports);
+    }
+
+    return [];
+  } catch (error) {
+    console.log('Could not read saved reports:', error);
+    return [];
   }
 }
+
+
+// 7. CHECK THE API
+// ------------------------------------------------------------
+
+async function checkApi() {
+  const result = {
+    healthy: false,
+    stats: null
+  };
+
+  try {
+    const healthResponse = await fetch(API_BASE + '/health');
+    const healthData = await healthResponse.json();
+
+    result.healthy = healthData.status === 'healthy';
+  } catch (error) {
+    console.log('Could not check API health.');
+  }
+
+  try {
+    const statsResponse = await fetch(API_BASE + '/stats');
+    result.stats = await statsResponse.json();
+  } catch (error) {
+    console.log('Could not load API statistics.');
+  }
+
+  return result;
+}
+
+
+// 8. LOAD AND CLEAN THE API DATA
+// ------------------------------------------------------------
 
 async function loadData() {
   try {
-    const api = await checkApi();
-    if (!api.healthy) showStatus('The sightings service may be unavailable. Trying to load data anyway...');
-    const res = await fetch(API);
-    if (!res.ok) throw new Error('API returned status ' + res.status);
-    const raw = await res.json();
-    if (!Array.isArray(raw)) throw new Error('Unexpected data format from the API');
+    const apiInfo = await checkApi();
 
-    // Clean: drop incomplete records, invalid dates and duplicate ids; tidy city names
-    const seen = new Set();
-    apiSightings = raw
-      .filter(s => s && s.id && s.location && s.date && s.species
-        && !isNaN(new Date(s.date)) && !seen.has(s.id) && seen.add(s.id))
-      .map(s => ({ ...s, location: normCity(s.location) }));
-
-    console.log('Records:', raw.length, 'after cleaning:', apiSightings.length);
-    if (api.stats) {
-      const removed = raw.length - apiSightings.length;
-      document.getElementById('dataInfo').textContent =
-        `Data from the Tick Sightings API v${api.stats.api_version}: ${raw.length} of ${api.stats.total_sightings} sightings received, ${removed} removed during cleaning (duplicates or incomplete records).`;
-      if (raw.length < api.stats.total_sightings) console.warn('Fewer records received than the API reports:', raw.length, 'vs', api.stats.total_sightings);
+    if (!apiInfo.healthy) {
+      showStatus('The sightings service may be unavailable. Trying to load data anyway...');
     }
-    console.log('Species in data:', [...new Set(apiSightings.map(s => s.species))]);
-    const unknown = [...new Set(apiSightings.map(s => s.location))].filter(c => !CITIES[c]);
-    if (unknown.length) console.warn('Add these cities to CITIES:', unknown);
-  } catch (err) {
-    console.error(err);
-    showStatus('Could not load live sighting data. Showing your saved reports only. Please refresh to try again.');
+
+    const response = await fetch(API);
+
+    if (!response.ok) {
+      throw new Error('API returned status ' + response.status);
+    }
+
+    const rawData = await response.json();
+
+    if (!Array.isArray(rawData)) {
+      throw new Error('Unexpected data format from the API.');
+    }
+
+    apiSightings = [];
+    const usedIds = [];
+
+    for (let i = 0; i < rawData.length; i++) {
+      const sighting = rawData[i];
+
+      if (!sighting || !sighting.id || !sighting.location ||
+          !sighting.date || !sighting.species) {
+        continue;
+      }
+
+      if (isNaN(new Date(sighting.date).getTime())) {
+        continue;
+      }
+
+      if (usedIds.includes(sighting.id)) {
+        continue;
+      }
+
+      usedIds.push(sighting.id);
+
+      const cleanSighting = { ...sighting };
+      cleanSighting.location = normaliseCity(sighting.location);
+
+      apiSightings.push(cleanSighting);
+    }
+
+    console.log('Records received:', rawData.length);
+    console.log('Records after cleaning:', apiSightings.length);
+
+    if (apiInfo.stats) {
+      const removedRecords = rawData.length - apiSightings.length;
+
+      getElement('dataInfo').textContent =
+        'Data from the Tick Sightings API v' +
+        apiInfo.stats.api_version + ': ' +
+        rawData.length + ' of ' +
+        apiInfo.stats.total_sightings +
+        ' sightings received, ' + removedRecords +
+        ' removed during cleaning (duplicates or incomplete records).';
+
+      if (rawData.length < apiInfo.stats.total_sightings) {
+        console.warn('The API returned fewer records than its total count.');
+      }
+    }
+
+    const speciesFound = [];
+
+    for (let i = 0; i < apiSightings.length; i++) {
+      const speciesName = apiSightings[i].species;
+
+      if (!speciesFound.includes(speciesName)) {
+        speciesFound.push(speciesName);
+      }
+    }
+
+    console.log('Species in data:', speciesFound);
+
+    const unknownCities = [];
+
+    for (let i = 0; i < apiSightings.length; i++) {
+      const cityName = apiSightings[i].location;
+
+      if (!CITIES[cityName] && !unknownCities.includes(cityName)) {
+        unknownCities.push(cityName);
+      }
+    }
+
+    if (unknownCities.length > 0) {
+      console.warn('Add these cities to CITIES:', unknownCities);
+    }
+
+  } catch (error) {
+    console.error('Error loading sightings:', error);
+
+    showStatus(
+      'Could not load live sighting data. Showing your saved reports only. Please refresh to try again.'
+    );
+
     apiSightings = [];
   }
+
   rebuild();
 }
+// 9. UPDATE THE WEBSITE DATA
+// ------------------------------------------------------------
 
 function rebuild() {
-  allSightings = [...getLocalReports(), ...apiSightings];
+  // Start with the user's saved reports.
+  allSightings = getLocalReports();
+
+  // Add the API sightings.
+  for (let i = 0; i < apiSightings.length; i++) {
+    allSightings.push(apiSightings[i]);
+  }
+
   populateSpeciesDropdown();
   fillReportDropdowns();
   buildSpeciesGuide();
@@ -317,219 +714,652 @@ function rebuild() {
   applyFilters();
 }
 
-// ---------- Filters ----------
+
+// 10. FILTER THE SIGHTINGS
+// ------------------------------------------------------------
+
 function populateSpeciesDropdown() {
-  const select = document.getElementById('filter-species');
-  const current = select.value;
-  const species = [...new Set(allSightings.map(s => s.species))].sort();
-  select.innerHTML = '<option value="all">Any species</option>'
-    + species.map(sp => `<option value="${esc(sp)}">${esc(sp)}</option>`).join('');
-  if (species.includes(current)) select.value = current;
+  const select = getElement('filter-species');
+  const previouslySelected = select.value;
+  const speciesNames = [];
+
+  // Find every different species in the sightings.
+  for (let i = 0; i < allSightings.length; i++) {
+    const name = allSightings[i].species;
+
+    if (!speciesNames.includes(name)) {
+      speciesNames.push(name);
+    }
+  }
+
+  speciesNames.sort();
+
+  // Add the species to the dropdown.
+  let options = '<option value="all">Any species</option>';
+
+  for (let i = 0; i < speciesNames.length; i++) {
+    options += '<option value="' + safeText(speciesNames[i]) + '">' +
+      safeText(speciesNames[i]) + '</option>';
+  }
+
+  select.innerHTML = options;
+
+  // Keep the previous choice if it is still available.
+  if (speciesNames.includes(previouslySelected)) {
+    select.value = previouslySelected;
+  }
 }
+
 
 function applyFilters() {
-  const from = document.getElementById('filter-from').value;
-  const to = document.getElementById('filter-to').value;
-  const speciesVal = document.getElementById('filter-species').value;
-  const severityVal = document.getElementById('filter-severity').value;
+  const fromDate = getElement('filter-from').value;
+  const toDate = getElement('filter-to').value;
+  const selectedSpecies = getElement('filter-species').value;
+  const selectedLevel = getElement('filter-severity').value;
 
-  const filtered = allSightings.filter(s => {
-    if (speciesVal !== 'all' && s.species !== speciesVal) return false;
-    const d = s.date.slice(0, 10);
-    if (from && d < from) return false;
-    if (to && d > to) return false;
-    return true;
-  });
-  renderMapMarkers(filtered, severityVal);
+  const filteredSightings = [];
+
+  // Check each sighting against the selected filters.
+  for (let i = 0; i < allSightings.length; i++) {
+    const sighting = allSightings[i];
+    const sightingDate = sighting.date.slice(0, 10);
+
+    // Check the species filter.
+    if (selectedSpecies !== 'all' && sighting.species !== selectedSpecies) {
+      continue;
+    }
+
+    // Check the start date.
+    if (fromDate && sightingDate < fromDate) {
+      continue;
+    }
+
+    // Check the end date.
+    if (toDate && sightingDate > toDate) {
+      continue;
+    }
+
+    filteredSightings.push(sighting);
+  }
+
+  renderMapMarkers(filteredSightings, selectedLevel);
 }
 
+
 function clearFilters() {
-  document.getElementById('filter-from').value = '';
-  document.getElementById('filter-to').value = '';
-  document.getElementById('filter-species').value = 'all';
-  document.getElementById('filter-severity').value = 'all';
+  getElement('filter-from').value = '';
+  getElement('filter-to').value = '';
+  getElement('filter-species').value = 'all';
+  getElement('filter-severity').value = 'all';
+
   applyFilters();
 }
 
-// ---------- Map ----------
-function renderMapMarkers(data, severityFilter = 'all') {
+
+// 11. DISPLAY MAP MARKERS
+// ------------------------------------------------------------
+
+function renderMapMarkers(data, severityFilter) {
+  // Remove the old markers before drawing new ones.
   markersLayer.clearLayers();
 
-  // Activity level is based on each city's overall total, so it stays the same when filtering
-  const totals = tally(allSightings.filter(s => s.location).map(s => s.location.trim()));
-  const overallMax = Math.max(1, ...Object.values(totals));
+  // Count the total number of sightings in each city.
+  const cityTotals = {};
 
-  const byCity = {};
-  data.forEach(s => {
-    const city = s.location ? s.location.trim() : '';
-    if (city) (byCity[city] ||= []).push(s);
-  });
-  const max = Math.max(1, ...Object.values(byCity).map(a => a.length));
+  for (let i = 0; i < allSightings.length; i++) {
+    const city = allSightings[i].location;
 
-  let shownSightings = 0, shownCities = 0;
-  Object.entries(byCity).forEach(([city, list]) => {
-    const pos = CITIES[city];
-    if (!pos) return;
+    if (city) {
+      if (!cityTotals[city]) {
+        cityTotals[city] = 0;
+      }
 
-    const level = totals[city] > overallMax * 0.66 ? 'High'
-      : totals[city] > overallMax * 0.33 ? 'Medium' : 'Low';
-    if (severityFilter !== 'all' && level !== severityFilter) return;
+      cityTotals[city]++;
+    }
+  }
 
-    const colour = { High: '#d62828', Medium: '#f77f00', Low: '#2a9d8f' }[level];
-    const marker = L.circleMarker(pos, {
-      radius: 6 + 12 * list.length / max,
-      color: colour, fillColor: colour, fillOpacity: 0.7
+  // Find the city with the most sightings.
+  let highestCityTotal = 1;
+  const totalCities = Object.keys(cityTotals);
+
+  for (let i = 0; i < totalCities.length; i++) {
+    if (cityTotals[totalCities[i]] > highestCityTotal) {
+      highestCityTotal = cityTotals[totalCities[i]];
+    }
+  }
+
+  // Group the currently filtered sightings by city.
+  const sightingsByCity = {};
+
+  for (let i = 0; i < data.length; i++) {
+    const city = data[i].location;
+
+    if (!city) {
+      continue;
+    }
+
+    if (!sightingsByCity[city]) {
+      sightingsByCity[city] = [];
+    }
+
+    sightingsByCity[city].push(data[i]);
+  }
+
+  // Find the largest number of filtered sightings in one city.
+  let highestFilteredTotal = 1;
+  const citiesWithSightings = Object.keys(sightingsByCity);
+
+  for (let i = 0; i < citiesWithSightings.length; i++) {
+    const city = citiesWithSightings[i];
+    const numberOfSightings = sightingsByCity[city].length;
+
+    if (numberOfSightings > highestFilteredTotal) {
+      highestFilteredTotal = numberOfSightings;
+    }
+  }
+
+  let shownSightings = 0;
+  let shownCities = 0;
+
+  // Create one marker for each city.
+  for (let i = 0; i < citiesWithSightings.length; i++) {
+    const city = citiesWithSightings[i];
+    const citySightings = sightingsByCity[city];
+    const position = CITIES[city];
+
+    // We cannot place a marker if we do not know the city's coordinates.
+    if (!position) {
+      continue;
+    }
+
+    // Work out the city's activity level using its overall total.
+    let activityLevel = 'Low';
+
+    if (cityTotals[city] > highestCityTotal * 0.66) {
+      activityLevel = 'High';
+    } else if (cityTotals[city] > highestCityTotal * 0.33) {
+      activityLevel = 'Medium';
+    }
+
+    // Apply the activity-level filter.
+    if (severityFilter !== 'all' && activityLevel !== severityFilter) {
+      continue;
+    }
+
+    // Choose the marker colour.
+    let markerColour = '#2a9d8f';
+
+    if (activityLevel === 'High') {
+      markerColour = '#d62828';
+    } else if (activityLevel === 'Medium') {
+      markerColour = '#f77f00';
+    }
+
+    // Bigger circles represent more sightings in the filtered results.
+    const markerSize = 6 + (12 * citySightings.length / highestFilteredTotal);
+
+    const marker = L.circleMarker(position, {
+      radius: markerSize,
+      color: markerColour,
+      fillColor: markerColour,
+      fillOpacity: 0.7
     });
-    marker.bindTooltip(`${city}: ${list.length} sightings`);
-    marker.on('click', () => showDetails(city, list, level, pos));
+
+    marker.bindTooltip(city + ': ' + citySightings.length + ' sightings');
+
+    // When a marker is clicked, show information about that city.
+    marker.on('click', function () {
+      showDetails(city, citySightings, activityLevel, position);
+    });
+
     markersLayer.addLayer(marker);
-    shownSightings += list.length;
+
+    shownSightings = shownSightings + citySightings.length;
     shownCities++;
+  }
+
+  getElement('summary').textContent =
+    'Showing ' + shownSightings + ' sightings in ' + shownCities + ' cities';
+}
+
+
+// 12. SHOW DETAILS WHEN A MAP MARKER IS CLICKED
+// ------------------------------------------------------------
+
+function showDetails(city, sightings, activityLevel, position) {
+  const speciesCounts = countItems(
+    sightings.map(function (sighting) {
+      return sighting.species;
+    })
+  );
+
+  const yearCounts = countItems(
+    sightings.map(function (sighting) {
+      return sighting.date.slice(0, 4);
+    })
+  );
+
+  // Turn the species counts into a list and sort highest first.
+  const speciesNames = Object.keys(speciesCounts);
+  speciesNames.sort(function (a, b) {
+    return speciesCounts[b] - speciesCounts[a];
   });
 
-  document.getElementById('summary').textContent =
-    `Showing ${shownSightings} sightings in ${shownCities} cities`;
+  // Get the years and put them in date order.
+  const years = Object.keys(yearCounts);
+  years.sort();
+
+  let highestYearTotal = 1;
+
+  for (let i = 0; i < years.length; i++) {
+    if (yearCounts[years[i]] > highestYearTotal) {
+      highestYearTotal = yearCounts[years[i]];
+    }
+  }
+
+  // Build the species list.
+  let speciesHTML = '';
+
+  for (let i = 0; i < speciesNames.length; i++) {
+    const species = speciesNames[i];
+    speciesHTML += '<li>' + safeText(species) + ': ' +
+      speciesCounts[species] + '</li>';
+  }
+
+  // Build the yearly timeline.
+  let timelineHTML = '';
+
+  for (let i = 0; i < years.length; i++) {
+    const year = years[i];
+    const number = yearCounts[year];
+    const barLength = Math.max(1, Math.round(number / highestYearTotal * 12));
+
+    timelineHTML += '<div>' + safeText(year) +
+      ' <span class="bar">' + '█'.repeat(barLength) +
+      '</span> ' + number + '</div>';
+  }
+
+  // Show everything in the sidebar.
+  getElement('panel').innerHTML =
+    '<h2>' + safeText(city) + '</h2>' +
+    '<p><strong>' + sightings.length + '</strong> sightings (with current filters). ' +
+    'Activity level: <strong>' + activityLevel + '</strong></p>' +
+    '<h3>Species breakdown</h3>' +
+    '<ul>' + speciesHTML + '</ul>' +
+    '<h3>Activity timeline (sightings per year)</h3>' +
+    '<div>' + timelineHTML + '</div>' +
+    '<div style="margin-top: 20px;">' +
+      '<button class="action-btn" onclick="reportFor(\'' + safeText(city) + '\')">Report a sighting here</button>' +
+      '<button class="action-btn" onclick="getDirections(' + position[0] + ',' + position[1] + ')">Get directions</button>' +
+      '<button class="action-btn" onclick="shareCity(\'' + safeText(city) + '\')">Share</button>' +
+    '</div>';
 }
 
-function showDetails(city, list, level, pos) {
-  const bySpecies = Object.entries(tally(list.map(s => s.species))).sort((a, b) => b[1] - a[1]);
-  const byYear = Object.entries(tally(list.map(s => s.date.slice(0, 4)))).sort();
-  const maxYear = Math.max(1, ...byYear.map(y => y[1]));
 
-  document.getElementById('panel').innerHTML = `
-    <h2>${esc(city)}</h2>
-    <p><strong>${list.length}</strong> sightings (with current filters). Activity level: <strong>${level}</strong></p>
+// 13. MAP BUTTON ACTIONS
+// ------------------------------------------------------------
 
-    <h3>Species breakdown</h3>
-    <ul>${bySpecies.map(([k, v]) => `<li>${esc(k)}: ${v}</li>`).join('')}</ul>
-
-    <h3>Activity timeline (sightings per year)</h3>
-    <div>${byYear.map(([y, v]) =>
-      `<div>${esc(y)} <span class="bar">${'█'.repeat(Math.max(1, Math.round(v / maxYear * 12)))}</span> ${v}</div>`).join('')}</div>
-
-    <div style="margin-top: 20px;">
-      <button class="action-btn" onclick="reportFor('${esc(city)}')">Report a sighting here</button>
-      <button class="action-btn" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${pos[0]},${pos[1]}')">Get directions</button>
-      <button class="action-btn" onclick="shareCity('${esc(city)}')">Share</button>
-    </div>`;
-}
-
+// Take the user to the report form and select the city.
 function reportFor(city) {
-  document.getElementById('rep-location').value = city;
+  getElement('rep-location').value = city;
   location.hash = 'report';
 }
 
+
+// Open Google Maps directions to the selected city.
+function getDirections(latitude, longitude) {
+  const url = 'https://www.google.com/maps/dir/?api=1&destination=' +
+    latitude + ',' + longitude;
+
+  window.open(url, '_blank');
+}
+
+
+// Share the selected city's tracker information.
 async function shareCity(city) {
-  const text = 'Tick activity in ' + city + ' - UK Tick Tracker';
+  const message = 'Tick activity in ' + city + ' - UK Tick Tracker';
+
   try {
-    if (navigator.share) await navigator.share({ title: 'UK Tick Tracker', text, url: location.href });
-    else { await navigator.clipboard.writeText(text + ' ' + location.href); alert('Link copied to clipboard!'); }
-  } catch (e) { /* the user cancelled sharing */ }
-}
-
-// ---------- Species guide (built from the data) ----------
-function buildSpeciesGuide() {
-  const groups = {};
-  allSightings.forEach(s => {
-    if (s.latinName) (groups[s.species] ||= { latin: s.latinName, list: [] }).list.push(s);
-  });
-  const entries = Object.entries(groups).sort();
-  const el = document.getElementById('speciesGuide');
-  if (!entries.length) { el.innerHTML = '<p>Species information will appear once sighting data loads.</p>'; return; }
-  el.innerHTML = entries.map(([name, g]) => {
-    const top = Object.entries(tally(g.list.map(s => s.location)))
-      .sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]).join(', ');
-    return `<div class="card">
-      <strong>${esc(name)} (<em>${esc(g.latin)}</em>)</strong>
-      <p>${esc(DESCRIPTIONS[name] || 'Description coming soon.')}</p>
-      <p>${g.list.length} sightings in our data. Most reported in: ${esc(top)}.</p>
-    </div>`;
-  }).join('');
-}
-
-// ---------- Report form ----------
-function fillReportDropdowns() {
-  const loc = document.getElementById('rep-location');
-  const sp = document.getElementById('rep-species');
-  const curLoc = loc.value, curSp = sp.value;
-  loc.innerHTML = '<option value="">Select a city...</option>'
-    + Object.keys(CITIES).sort().map(c => `<option>${esc(c)}</option>`).join('');
-  const species = [...new Set(allSightings.map(s => s.species))].filter(x => x !== 'Unknown / Other').sort();
-  sp.innerHTML = '<option value="">Select species...</option>'
-    + species.map(x => `<option>${esc(x)}</option>`).join('') + '<option>Unknown / Other</option>';
-  loc.value = curLoc; sp.value = curSp;
-}
-
-function handleReport(e) {
-  e.preventDefault();
-  const msgs = document.getElementById('form-messages');
-  const date = document.getElementById('rep-date').value;
-  const time = document.getElementById('rep-time').value;
-  const city = document.getElementById('rep-location').value;
-  const species = document.getElementById('rep-species').value;
-  const severity = document.getElementById('rep-severity').value;
-  const notes = document.getElementById('rep-notes').value.trim();
-  const file = document.getElementById('rep-image').files[0];
-
-  const errors = [], warnings = [];
-  if (!date) errors.push('Choose the date of the sighting.');
-  else if (new Date(date) > new Date()) errors.push('The date cannot be in the future.');
-  if (!city) errors.push('Choose a city.');
-  if (!species) errors.push('Choose a species.');
-  if (file && !file.type.startsWith('image/')) errors.push('The upload must be an image file.');
-  if (file && file.size > 500 * 1024) errors.push('The photo must be under 500 KB. Choose a smaller image.');
-  if (!time) warnings.push('No time entered, so the report will be saved without one.');
-  if (species === 'Unknown / Other') warnings.push('Species is unknown. Your vet may be able to help identify it.');
-
-  const box = (cls, list) => list.map(m => `<div class="msg ${cls}">${esc(m)}</div>`).join('');
-  if (errors.length) { msgs.innerHTML = box('error', errors); return; }
-
-  const save = image => {
-    const report = { id: 'local-' + Date.now(), date, time, location: city, species, severity, notes, image };
-    try {
-      const existing = getLocalReports();
-      existing.push(report);
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(existing));
-    } catch (err) {
-      msgs.innerHTML = box('error', ['Could not save the report because browser storage is full. Try a smaller photo or clear your saved reports.']);
-      return;
+    if (navigator.share) {
+      await navigator.share({
+        title: 'UK Tick Tracker',
+        text: message,
+        url: location.href
+      });
+    } else {
+      await navigator.clipboard.writeText(message + ' ' + location.href);
+      alert('Link copied to clipboard!');
     }
-    msgs.innerHTML = box('warning', warnings)
-      + box('success', ['Report submitted. Your sighting is saved and now shows on the map.'])
-      + (image ? `<img src="${image}" alt="Photo you uploaded" style="max-width:200px;margin-top:10px;border-radius:4px">` : '');
-    document.getElementById('sighting-form').reset();
-    rebuild();
-  };
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => save(reader.result);
-    reader.onerror = () => { msgs.innerHTML = box('error', ['Could not read the photo. Try a different image.']); };
-    reader.readAsDataURL(file);
-  } else {
-    save(null);
+  } catch (error) {
+    // The user may have cancelled the share window.
+    console.log('Sharing was cancelled.');
   }
 }
+// 14. BUILD THE SPECIES GUIDE
+// ------------------------------------------------------------
+
+function buildSpeciesGuide() {
+  const speciesGroups = {};
+
+  // Group sightings by species.
+  for (let i = 0; i < allSightings.length; i++) {
+    const sighting = allSightings[i];
+
+    // Only show species that have a Latin name.
+    if (sighting.latinName) {
+      if (!speciesGroups[sighting.species]) {
+        speciesGroups[sighting.species] = {
+          latin: sighting.latinName,
+          sightings: []
+        };
+      }
+
+      speciesGroups[sighting.species].sightings.push(sighting);
+    }
+  }
+
+  const speciesNames = Object.keys(speciesGroups);
+  speciesNames.sort();
+
+  const guide = getElement('speciesGuide');
+
+  if (speciesNames.length === 0) {
+    guide.innerHTML = '<p>Species information will appear once sighting data loads.</p>';
+    return;
+  }
+
+  let guideHTML = '';
+
+  for (let i = 0; i < speciesNames.length; i++) {
+    const name = speciesNames[i];
+    const group = speciesGroups[name];
+
+    // Count how many sightings came from each city.
+    const cityNames = [];
+
+    for (let j = 0; j < group.sightings.length; j++) {
+      cityNames.push(group.sightings[j].location);
+    }
+
+    const cityCounts = countItems(cityNames);
+    const cities = Object.keys(cityCounts);
+
+    // Sort cities so the most reported cities appear first.
+    cities.sort(function (a, b) {
+      return cityCounts[b] - cityCounts[a];
+    });
+
+    // Only display the top three cities.
+    const topCities = [];
+
+    for (let j = 0; j < cities.length && j < 3; j++) {
+      topCities.push(cities[j]);
+    }
+
+    let description = DESCRIPTIONS[name];
+
+    if (!description) {
+      description = 'Description coming soon.';
+    }
+
+    guideHTML +=
+      '<div class="card">' +
+        '<strong>' + safeText(name) +
+        ' (<em>' + safeText(group.latin) + '</em>)</strong>' +
+        '<p>' + safeText(description) + '</p>' +
+        '<p>' + group.sightings.length +
+        ' sightings in our data. Most reported in: ' +
+        safeText(topCities.join(', ')) + '.</p>' +
+      '</div>';
+  }
+
+  guide.innerHTML = guideHTML;
+}
+
+
+// 15. FILL THE REPORT FORM DROPDOWNS
+// ------------------------------------------------------------
+
+function fillReportDropdowns() {
+  const locationDropdown = getElement('rep-location');
+  const speciesDropdown = getElement('rep-species');
+
+  // Remember the current selections before refreshing the dropdowns.
+  const oldCity = locationDropdown.value;
+  const oldSpecies = speciesDropdown.value;
+
+  // Add all the cities.
+  const cityNames = Object.keys(CITIES);
+  cityNames.sort();
+
+  let cityOptions = '<option value="">Select a city...</option>';
+
+  for (let i = 0; i < cityNames.length; i++) {
+    cityOptions += '<option>' + safeText(cityNames[i]) + '</option>';
+  }
+
+  locationDropdown.innerHTML = cityOptions;
+
+  // Find all the different species in the data.
+  const speciesNames = [];
+
+  for (let i = 0; i < allSightings.length; i++) {
+    const name = allSightings[i].species;
+
+    if (name !== 'Unknown / Other' && !speciesNames.includes(name)) {
+      speciesNames.push(name);
+    }
+  }
+
+  speciesNames.sort();
+
+  let speciesOptions = '<option value="">Select species...</option>';
+
+  for (let i = 0; i < speciesNames.length; i++) {
+    speciesOptions += '<option>' + safeText(speciesNames[i]) + '</option>';
+  }
+
+  speciesOptions += '<option>Unknown / Other</option>';
+  speciesDropdown.innerHTML = speciesOptions;
+
+  // Restore the previous selections if they still exist.
+  locationDropdown.value = oldCity;
+  speciesDropdown.value = oldSpecies;
+}
+
+
+// 16. SUBMIT A NEW SIGHTING REPORT
+// ------------------------------------------------------------
+
+function handleReport(event) {
+  event.preventDefault();
+
+  const messages = getElement('form-messages');
+
+  // Read the values entered into the form.
+  const date = getElement('rep-date').value;
+  const time = getElement('rep-time').value;
+  const city = getElement('rep-location').value;
+  const species = getElement('rep-species').value;
+  const severity = getElement('rep-severity').value;
+  const notes = getElement('rep-notes').value.trim();
+  const file = getElement('rep-image').files[0];
+
+  const errors = [];
+  const warnings = [];
+
+  // Check the required fields.
+  if (!date) {
+    errors.push('Choose the date of the sighting.');
+  } else if (new Date(date) > new Date()) {
+    errors.push('The date cannot be in the future.');
+  }
+
+  if (!city) {
+    errors.push('Choose a city.');
+  }
+
+  if (!species) {
+    errors.push('Choose a species.');
+  }
+
+  // Check the uploaded photo.
+  if (file && !file.type.startsWith('image/')) {
+    errors.push('The upload must be an image file.');
+  }
+
+  if (file && file.size > 500 * 1024) {
+    errors.push('The photo must be under 500 KB. Choose a smaller image.');
+  }
+
+  // Warnings do not stop the report from being saved.
+  if (!time) {
+    warnings.push('No time entered, so the report will be saved without one.');
+  }
+
+  if (species === 'Unknown / Other') {
+    warnings.push('Species is unknown. Your vet may be able to help identify it.');
+  }
+
+  // Turn a list of messages into HTML.
+  function makeMessageHTML(type, messageList) {
+    let html = '';
+
+    for (let i = 0; i < messageList.length; i++) {
+      html += '<div class="msg ' + type + '">' +
+        safeText(messageList[i]) + '</div>';
+    }
+
+    return html;
+  }
+
+  // If there are errors, stop here and show them.
+  if (errors.length > 0) {
+    messages.innerHTML = makeMessageHTML('error', errors);
+    return;
+  }
+
+  // Save the report after any photo has been read.
+  function saveReport(photoData) {
+    const newReport = {
+      id: 'local-' + Date.now(),
+      date: date,
+      time: time,
+      location: city,
+      species: species,
+      severity: severity,
+      notes: notes,
+      image: photoData
+    };
+
+    try {
+      const savedReports = getLocalReports();
+
+      savedReports.push(newReport);
+
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(savedReports));
+
+    } catch (error) {
+      messages.innerHTML = makeMessageHTML('error', [
+        'Could not save the report because browser storage is full. Try a smaller photo or clear your saved reports.'
+      ]);
+      return;
+    }
+
+    // Show warnings and the success message.
+    messages.innerHTML =
+      makeMessageHTML('warning', warnings) +
+      makeMessageHTML('success', [
+        'Report submitted. Your sighting is saved and now shows on the map.'
+      ]);
+
+    // Clear the form.
+    getElement('sighting-form').reset();
+
+    // Refresh the map and the saved reports list.
+    rebuild();
+  }
+
+  // If the user selected a photo, read it first.
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      saveReport(reader.result);
+    };
+
+    reader.onerror = function () {
+      messages.innerHTML = makeMessageHTML('error', [
+        'Could not read the photo. Try a different image.'
+      ]);
+    };
+
+    reader.readAsDataURL(file);
+
+  } else {
+    // No photo was selected, so save the report without one.
+    saveReport(null);
+  }
+}
+
+
+// 17. SHOW THE USER'S SAVED REPORTS
+// ------------------------------------------------------------
 
 function showReports() {
   const reports = getLocalReports();
-  document.getElementById('myReports').innerHTML = reports.length
-    ? reports.map(r => `<li>${esc(r.date)}${r.time ? ' ' + esc(r.time) : ''} - ${esc(r.species)} in ${esc(r.location)} (${esc(r.severity || 'n/a')})${r.image ? ' - photo attached' : ''}</li>`).join('')
-    : '<li>No reports yet. Submit one above and it will appear here.</li>';
+  const list = getElement('myReports');
+
+  if (reports.length === 0) {
+    list.innerHTML = '<li>No reports yet. Submit one above and it will appear here.</li>';
+    return;
+  }
+
+  let reportHTML = '';
+
+  for (let i = 0; i < reports.length; i++) {
+    const report = reports[i];
+
+    reportHTML += '<li>' +
+      safeText(report.date) +
+      (report.time ? ' ' + safeText(report.time) : '') +
+      ' - ' + safeText(report.species) +
+      ' in ' + safeText(report.location) +
+      ' (' + safeText(report.severity || 'n/a') + ')' +
+      (report.image ? ' - photo attached' : '') +
+      '</li>';
+  }
+
+  list.innerHTML = reportHTML;
 }
 
+
+// 18. DELETE SAVED REPORTS
+// ------------------------------------------------------------
+
 function clearMyReports() {
-  if (confirm('Delete all reports saved in this browser?')) {
+  const answer = confirm('Delete all reports saved in this browser?');
+
+  if (answer) {
     localStorage.removeItem(LOCAL_KEY);
-    document.getElementById('form-messages').innerHTML = '';
+    getElement('form-messages').innerHTML = '';
     rebuild();
   }
 }
 
-// Stop users picking a future date in the date picker
-document.getElementById('rep-date').max = new Date().toISOString().slice(0, 10);
+
+// 19. SET THE MAXIMUM REPORT DATE
+
+
+const today = new Date().toISOString().slice(0, 10);
+getElement('rep-date').max = today;
+
+
+// 20. START THE WEBSITE
+
 
 loadData();
+
 </script>
 </body>
 </html>
