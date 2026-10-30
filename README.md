@@ -9,7 +9,10 @@ A web app that maps tick sightings across the UK, helps people learn about ticks
 
 A sketch of the page layout, drawn in Figma after building the first version to document the design.
 
-![Map page wireframe](Untitled.png) ![Map page wireframe](Untitled(1).png) ![Map page wireframe](Untitled(2).png)
+![Map page wireframe](Untitled.png) 
+![Map page wireframe](Untitled(1).png)
+![Map page wireframe](Untitled(2).png)
+
 
 
 ## Requirements covered
