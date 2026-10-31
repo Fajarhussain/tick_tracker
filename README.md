@@ -1,6 +1,7 @@
 # UK Tick Tracker
 
 Task: Elanco Placement Programme technical task (Frontend)
+By Fajar Hussain
 
 - Video walkthrough: https://youtu.be/NG8-dI5V-lA
   
