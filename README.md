@@ -1,7 +1,8 @@
 # UK Tick Tracker
 
 Task: Elanco Placement Programme technical task (Frontend)
-Video walkthrough: [(https://youtu.be/NG8-dI5V-lA]
+Video walkthrough: (https://youtu.be/NG8-dI5V-lA
+Live website link: https://fajarhussain.github.io/tick_tracker/
 
 A web app that maps tick sightings across the UK, helps people learn about ticks and lets them report their own sightings. It is built with plain HTML, CSS and JavaScript and uses the Elanco Tick Sightings API.
 
